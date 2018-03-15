@@ -5,6 +5,12 @@ const client = new cassandra.Client({
   authProvider: new cassandra.auth.PlainTextAuthProvider('developer', 'devpassword')
 })
 
-const state = client.getState();
+client.execute(`CREATE KEYSPACE IF NOT EXISTS vq_ai_tracking WITH REPLICATION = { ‘class’ : ‘SimpleStrategy’, ‘replication_factor’ : 1 };`)
+.then(() =>
+client.execute(`CREATE TABLE IF NOT EXISTS vq_ai_tracking.actions(userId uuid primary key);`,
+(err, result) => {
+    console.log(err, result);
+}));
 
-console.log(state)
+//const state = client.getState();
+//console.log(state)
