@@ -26,7 +26,6 @@ router.get("/item", function(req, res) {
 
 router.get("/item/:id", function(req, res) {
   db.getById(req.params.id).then(function(results) {
-    console.log(results)
     res.json(results)
   })
 })
