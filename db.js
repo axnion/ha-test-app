@@ -2,39 +2,38 @@ const cassandra = require('cassandra-driver')
 const config    = require('./config.js')
 
 function init() {
-  execute("CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
+  execute(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
-    execute("CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
+    execute(getInitClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
   })
 }
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute("INSERT INTO item JSON '" + JSON.stringify(item) +"';")
+  return execute(getClient(), "INSERT INTO item JSON '" + JSON.stringify(item) +"';")
 }
 
 function get() {
-  return execute("SELECT JSON * FROM item;")
+  return execute(getClient(), "SELECT JSON * FROM item;")
 }
 
 function getById(id) {
-  return execute("SELECT JSON * FROM item WHERE id = " + id + ";")
+  return execute(getClient(), "SELECT JSON * FROM item WHERE id = " + id + ";")
 }
 
 function update(item) {
-  return execute("UPDATE item SET name = '" + item.name + "' WHERE id = " + item.id + ";")
+  return execute(getClient(), "UPDATE item SET name = '" + item.name + "' WHERE id = " + item.id + ";")
 }
 
 function remove(id) {
-  return execute("DELETE FROM item WHERE id = " + id + ";")
+  return execute(getClient(), "DELETE FROM item WHERE id = " + id + ";")
 }
 
 function test() {
-  return execute('SELECT * FROM system.local')
+  return execute(getClient(), 'SELECT * FROM system.local')
 }
 
-function execute(query) {
-  const client = getClient()
+function execute(client, query) {
   return client.connect()
     .then(function() {
       console.log("executing: " + query)
@@ -57,6 +56,13 @@ function getClient() {
   return new cassandra.Client({
     contactPoints: config.db.contactPoints,
     keyspace: config.db.keyspace,
+    authProvider: new cassandra.auth.PlainTextAuthProvider('cassandra', 'cassandra')
+  })
+}
+
+function getInitClient() {
+  return new cassandra.Client({
+    contactPoints: config.db.contactPoints,
     authProvider: new cassandra.auth.PlainTextAuthProvider('cassandra', 'cassandra')
   })
 }
