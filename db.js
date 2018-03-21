@@ -56,14 +56,14 @@ function getClient() {
   return new cassandra.Client({
     contactPoints: config.db.contactPoints,
     keyspace: config.db.keyspace,
-    authProvider: new cassandra.auth.PlainTextAuthProvider('cassandra', 'cassandra')
+    authProvider: new cassandra.auth.PlainTextAuthProvider(config.db.user, config.db.pass)
   })
 }
 
 function getInitClient() {
   return new cassandra.Client({
     contactPoints: config.db.contactPoints,
-    authProvider: new cassandra.auth.PlainTextAuthProvider('cassandra', 'cassandra')
+    authProvider: new cassandra.auth.PlainTextAuthProvider(config.db.user, config.db.pass)
   })
 }
 
