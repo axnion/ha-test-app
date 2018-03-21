@@ -1,4 +1,5 @@
 const cassandra = require('cassandra-driver')
+const config    = require('./config.js')
 
 function init() {
   execute("CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
@@ -54,10 +55,9 @@ function execute(query) {
 
 function getClient() {
   return new cassandra.Client({
-    contactPoints: [ '10.0.10.22'],
-    keyspace: "inventory",
+    contactPoints: config.db.contactPoints,
+    keyspace: config.db.keyspace,
     authProvider: new cassandra.auth.PlainTextAuthProvider('cassandra', 'cassandra')
-
   })
 }
 
