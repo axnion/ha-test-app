@@ -1,6 +1,7 @@
 const express       = require('express')
 const app           = express()
 const bodyParser    = require('body-parser');
+const config    = require('./config.js')
 
 const db = require("./db")
 db.init()
@@ -13,6 +14,10 @@ const port = process.env.PORT || 3000
 var router = express.Router()
 
 router.get("/", function(req, res) {
+  res.json(config.app)
+})
+
+router.get("/status", function(req, res) {
   db.test().then(function(results) {
     res.json(results)
   })
