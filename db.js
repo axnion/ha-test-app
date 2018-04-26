@@ -6,19 +6,25 @@ function init() {
   //SELECT table_name FROM system_schema.tables WHERE keyspace_name='inventory';
   execute(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
-    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version (id uuid PRIMARY KEY, table_name text, version int )")
+    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version (id uuid PRIMARY KEY, table_name text, cur_version int, pre_version )")
   })
   .then(function() {
     return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
   })
   .then(function() {
-    return execute(getClient(), "SELECT * FROM version WHERE table_name='inventory' ALLOW FILTERING")
+    return execute(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     if (!results) {
-      execute(getClient(), "INSERT INTO version (table_name, version) VALUES ('item', '0')")
+      return execute(getClient(), "INSERT INTO version (table_name, cur_version, pre_version) VALUES ('item', '0', '0')")
+    } else {
+      return doNothing()
     }
-
+  })
+  .then(function() {
+    return execute(getClient(), "SELECT cur_version FROM version WHERE table_name='item'")
+  })
+  .then(function(results) {
     console.log(results)
   })
 }
