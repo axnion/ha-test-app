@@ -16,7 +16,7 @@ function init() {
   })
   .then(function(results) {
     console.log(results.info)
-    if (results. == 0) {
+    if (results.rows == 0) {
       return execute(getClient(), "INSERT INTO version (table_name, cur_version, pre_version) VALUES ('item', '0', '0')")
     } else {
       return doNothing()
