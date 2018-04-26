@@ -6,7 +6,7 @@ function init() {
   //SELECT table_name FROM system_schema.tables WHERE keyspace_name='inventory';
   execute(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
-    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version (id uuid PRIMARY KEY, table_name text, cur_version int, pre_version )")
+    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version (id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
   })
   .then(function() {
     return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
