@@ -9,16 +9,13 @@ function init() {
     return execute(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
   })
   .then(function() {
-    return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
-  })
-  .then(function() {
     return execute(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     console.log(results.info)
     if (results.rowLength == 0) {
       id = cassandra.types.Uuid.random()
-      return execute(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id +", 'item', '" db_version "', 0)")
+      return execute(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id + ", 'item', 0, 0)")
     } else {
       return doNothing()
     }
@@ -27,13 +24,20 @@ function init() {
     return execute(getClient(), "SELECT cur_version FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
-    console.log(results)
+    if (results.rows[0].cur_version < db_version) {
+      execute(getClient(), "UPDATE version SET cur_version = " + db_version + " WHERE table_name = 'item'")
+      .then(function() {
+        return execute(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
+      })
+    } else {
+      return doNothing()
+    }
   })
 }
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute(getClient(), "INSERT INTO item (id, name) VALUES (" + item.id +"," + item.name + ")")
+  return execute(getClient(), "INSERT INTO item" + db_version + " (id, name) VALUES (" + item.id +"," + item.name + ")")
 }
 
 function get() {
@@ -41,7 +45,7 @@ function get() {
 }
 
 function getById(id) {
-  return execute(getClient(), "SELECT JSON * FROM item WHERE id = " + id + ";")
+  return execute(getClient(), "SELECT * FROM item WHERE id = " + id + ";")
 }
 
 function update(item) {
