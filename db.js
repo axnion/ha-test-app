@@ -21,11 +21,11 @@ function init() {
     }
   })
   .then(function() {
-    return execute(getClient(), "SELECT cur_version FROM version WHERE table_name='item' ALLOW FILTERING")
+    return execute(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     if (results.rows[0].cur_version < db_version) {
-      execute(getClient(), "UPDATE version SET cur_version = " + db_version + " WHERE table_name = 'item'")
+      execute(getClient(), "UPDATE version SET cur_version = " + db_version + " WHERE id = " + results.rows[0].id )
       .then(function() {
         return execute(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
       })
