@@ -6,7 +6,7 @@ function init() {
   //SELECT table_name FROM system_schema.tables WHERE keyspace_name='inventory';
   execute(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
-    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version (id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
+    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
   })
   .then(function() {
     return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
@@ -17,7 +17,8 @@ function init() {
   .then(function(results) {
     console.log(results.info)
     if (results.rows == 0) {
-      return execute(getClient(), "INSERT INTO version (table_name, cur_version, pre_version) VALUES ('item', 0, 0)")
+      id = cassandra.types.Uuid.random()
+      return execute(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id +", 'item', 0, 0)")
     } else {
       return doNothing()
     }
@@ -32,7 +33,7 @@ function init() {
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute(getClient(), "INSERT INTO item (name) VALUES (" + item.name + ")")
+  return execute(getClient(), "INSERT INTO item (id, name) VALUES (" + item.id +"," + item.name + ")")
 }
 
 function get() {
