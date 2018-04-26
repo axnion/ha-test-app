@@ -12,11 +12,11 @@ function init() {
     return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
   })
   .then(function() {
-    return execute(getClient(), "SELECT * FROM version WHERE table_name=inventory")
+    return execute(getClient(), "SELECT * FROM version WHERE table_name='inventory'")
   })
   .then(function(results) {
     if (!results) {
-      execute(getClient(), "INSERT INTO version (table_name, version) VALUES (item, 0)")
+      execute(getClient(), "INSERT INTO version (table_name, version) VALUES ('item', '0')")
     }
 
     console.log(results)
