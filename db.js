@@ -12,7 +12,7 @@ function init() {
     return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
   })
   .then(function() {
-    return execute(getClient(), "SELECT * FROM version WHERE table_name='inventory'")
+    return execute(getClient(), "SELECT * FROM version WHERE table_name='inventory' ALLOW FILTERING")
   })
   .then(function(results) {
     if (!results) {
