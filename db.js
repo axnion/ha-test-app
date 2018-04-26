@@ -15,6 +15,10 @@ function init() {
     return execute(getClient(), "SELECT * FROM version WHERE table_name=inventory")
   })
   .then(function(results) {
+    if (!results) {
+      execute(getClient(), "INSERT INTO version (table_name, version) (item, 0)")
+    }
+
     console.log(results)
   })
 }
