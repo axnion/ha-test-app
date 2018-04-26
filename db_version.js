@@ -1,2 +1,2 @@
-let db_version = 3
+let db_version = 4
 module.exports = db_version;
