@@ -1,0 +1,30 @@
+services:
+  - module: passfail
+    criterias:
+      - failures>0%, stop as failed
+
+execution:
+- concurrency: 1
+  throughput: 5
+  hold-for: 30s
+  scenario: smoke
+
+scenarios:
+  smoke:
+    timeout: 5s
+    default-address: http://localhost:8081
+    requests:
+    - url: /
+      method: GET
+    - url: /item
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        name: ATestName
+    - url: /item
+      method: GET
+      extract-jsonpath:
+        id: $[0].id
+    - url: /item/${id}
+      method: GET
