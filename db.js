@@ -1,20 +1,31 @@
-const cassandra = require('cassandra-driver')
-const config    = require('./config.js')
+const cassandra   = require('cassandra-driver')
+const config      = require('./config.js')
+const db_version  = require('./db_version.js')    
 
 function init() {
+  SELECT table_name FROM system_schema.tables WHERE keyspace_name='inventory';
   execute(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
-    execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
+    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version (id uuid PRIMARY KEY, table_name text, version int )")
+  })
+  .then(function() {
+    return execute(getClient(), "CREATE TABLE IF NOT EXISTS item ( id uuid PRIMARY KEY, name text )")
+  })
+  .then(function() {
+    return execute(getClient(), "SELECT * FROM version WHERE table_name=inventory")
+  })
+  .then(function(results) {
+    console.log(results)
   })
 }
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute(getClient(), "INSERT INTO item JSON '" + JSON.stringify(item) +"';")
+  return execute(getClient(), "INSERT INTO item (name) VALUES (" + item.name + ")")
 }
 
 function get() {
-  return execute(getClient(), "SELECT JSON * FROM item;")
+  return execute(getClient(), "SELECT * FROM item;")
 }
 
 function getById(id) {
@@ -65,6 +76,10 @@ function getInitClient() {
     contactPoints: config.db.contactPoints,
     authProvider: new cassandra.auth.PlainTextAuthProvider(config.db.user, config.db.pass)
   })
+}
+
+function doNothing() {
+  return Promise.resolve("Doing nothing")
 }
 
 module.exports = {

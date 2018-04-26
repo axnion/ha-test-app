@@ -10,5 +10,4 @@ config.db.keyspace = "default"
 config.db.user = "cassandra"
 config.db.pass = "cassandra"
 
-
 module.exports = config;
