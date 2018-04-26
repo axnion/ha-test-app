@@ -15,6 +15,7 @@ function init() {
     return execute(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
+    console.log(results)
     if (!results) {
       return execute(getClient(), "INSERT INTO version (table_name, cur_version, pre_version) VALUES ('item', '0', '0')")
     } else {
