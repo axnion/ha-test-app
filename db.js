@@ -22,7 +22,7 @@ function init() {
     }
   })
   .then(function() {
-    return execute(getClient(), "SELECT cur_version FROM version WHERE table_name='item'")
+    return execute(getClient(), "SELECT cur_version FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     console.log(results)
