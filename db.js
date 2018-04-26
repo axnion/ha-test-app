@@ -16,9 +16,9 @@ function init() {
   })
   .then(function(results) {
     console.log(results.info)
-    if (results.rows == 0) {
+    if (results.rowLength == 0) {
       id = cassandra.types.Uuid.random()
-      return execute(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id +", 'item', 0, 0)")
+      return execute(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id +", 'item', '" db_version "', 0)")
     } else {
       return doNothing()
     }
