@@ -46,10 +46,8 @@ function init() {
             return executeRisky(getClient(), "SELECT * FROM item_v1")
           })
           .then(function(data) {
-            var promises
+            var promises = []
             for (i = 0; i < data.rowLength; i++) {
-              console.log(data.rows[i].id)
-              console.log(data.rows[i].name)
               var promise = executeRisky(getClient(), "INSERT INTO item_2 (id, name, number) VALUES (" + data.rows[i].id + ", '" + data.rows[i].name + "', '')")
               promises.push(promise)
             }
