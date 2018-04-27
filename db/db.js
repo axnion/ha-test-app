@@ -13,7 +13,7 @@ function init() {
 }
 
 function add(item) {
-  return add.run()
+  return add.run(item)
 }
 
 function getAll() {
@@ -21,15 +21,15 @@ function getAll() {
 }
 
 function get(id) {
-  return get.run()
+  return get.run(id)
 }
 
 function update(item) {
-  return update.run()
+  return update.run(item)
 }
 
 function remove(id) {
-  return remove.run()
+  return remove.run(id)
 }
 
 function system() {

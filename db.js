@@ -2,7 +2,6 @@ const cassandra   = require('cassandra-driver')
 const config      = require('./config.js')
 const db_version  = require('./db_version.js')
 
-
 function init() {
   let cur_version
 
