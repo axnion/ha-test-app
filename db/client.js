@@ -1,5 +1,5 @@
 const cassandra   = require('cassandra-driver')
-const config      = require('./config.js')
+const config      = require('./../config.js')
 
 /**
 * DATABASE EXECUTION FUNCTION
