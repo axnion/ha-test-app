@@ -4,14 +4,6 @@ const getRunner     = require("./methods/get")
 const updateRunner  = require("./methods/update")
 const removeRunner  = require("./methods/remove")
 
-function init() {
-  return initRunner.run()
-  .catch(function(err) {
-    console.log(err)
-    process.exit(1)
-  })
-}
-
 function add(item) {
   return addRunner.run(item)
 }
