@@ -31,7 +31,7 @@ function migration() {
   let cur_version
 
   return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
-  .then(function() {
+  .then(function(results) {
     id = results.rows[0].id
     cur_version = results.rows[0].cur_version
 
