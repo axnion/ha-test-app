@@ -40,7 +40,7 @@ function init() {
         }
       })
       .then(function() {
-        if (cur_version == 2 && db_version >= 3) {
+        if (cur_version < 2 && db_version >= 2) {
           return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v2 ( id uuid PRIMARY KEY, name text, number text)")
           .then(function() {
             return executeRisky(getClient(), "SELECT * FROM item_v1")
@@ -48,7 +48,7 @@ function init() {
           .then(function(data) {
             var promises
             for (var entry in data.rows) {
-              var promise = executeRisky("INSERT INTO item_2 (id, name, number) VALUES (" + entry.id + ", " + entry.name + ", '')")
+              var promise = executeRisky("INSERT INTO item_2 (id, name, number) VALUES (" + entry.id + ", '" + entry.name + "', '')")
               promises.push(promise)
             }
 
