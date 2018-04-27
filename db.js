@@ -3,7 +3,6 @@ const config      = require('./config.js')
 const db_version  = require('./db_version.js')
 
 
-// TODO: Add moving of data between old and new table
 function init() {
   let cur_version
 
@@ -66,7 +65,11 @@ function init() {
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute(getClient(), "INSERT INTO item_v" + db_version + " (id, name) VALUES (" + item.id +", '" + item.name + "')")
+  if (db_version == 1) {
+    return execute(getClient(), "INSERT INTO item_v1 (id, name) VALUES (" + item.id +", '" + item.name + "')")
+  } else if(db_version == 2) {
+    return execute(getClient(), "INSERT INTO item_v2 (id, name, number) VALUES (" + item.id +", '" + item.name + "', '" + item.number + "')")
+  }
 }
 
 function get() {
@@ -78,7 +81,11 @@ function getById(id) {
 }
 
 function update(item) {
-  return execute(getClient(), "UPDATE item_v" + db_version + " SET name = '" + item.name + "' WHERE id = " + item.id + ";")
+  if (db_version == 1) {
+    return execute(getClient(), "UPDATE item_v1 SET name = '" + item.name + "' WHERE id = " + item.id + ";")
+  } else if(db_version == 2) {
+    return execute(getClient(), "UPDATE item_v2 SET name = '" + item.name + "', '" + item.number + "' WHERE id = " + item.id + ";")
+  }
 }
 
 function remove(id) {
