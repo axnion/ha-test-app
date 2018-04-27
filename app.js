@@ -10,6 +10,12 @@ app.use(bodyParser.json())
 
 const port = process.env.PORT || 3000
 
+db.init()
+.then(function() {
+  app.listen(port)
+  console.log("Magic happens on port " + port)
+})
+
 var router = express.Router()
 
 router.get("/", function(req, res) {
@@ -61,11 +67,3 @@ app.use(function(err, req, res, next) {
     next(err)
   }
 })
-
-db.init()
-.then(function() {
-  console.log("hello")
-  app.listen(port)
-})
-
-console.log("Magic happens on port " + port)
