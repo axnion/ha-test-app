@@ -48,7 +48,7 @@ function init() {
           .then(function(data) {
             var promises
             for (var entry in data.rows) {
-              var promise = executeRisky("INSERT INTO item_2 (id, name, number) VALUES (" + entry.id + ", '" + entry.name + "', '')")
+              var promise = executeRisky(getClient(), "INSERT INTO item_2 (id, name, number) VALUES (" + entry.id + ", '" + entry.name + "', '')")
               promises.push(promise)
             }
 
