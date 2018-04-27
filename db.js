@@ -1,4 +1,5 @@
 const cassandra   = require('cassandra-driver')
+const Promise     = require('promise');
 const config      = require('./config.js')
 const db_version  = require('./db_version.js')
 
