@@ -1,5 +1,6 @@
 const getClient   = require('./../client').getClient
 const execute     = require('./../client').execute
+const cassandra   = require('cassandra-driver')
 const db_version  = require('./../db_version')
 
 function run(item) {
