@@ -66,7 +66,7 @@ function init() {
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute(getClient(), "INSERT INTO item_v" + db_version + " (id, name) VALUES (" + item.id +"," + item.name + ")")
+  return execute(getClient(), "INSERT INTO item_v" + db_version + " (id, name) VALUES (" + item.id +", '" + item.name + "')")
 }
 
 function get() {
