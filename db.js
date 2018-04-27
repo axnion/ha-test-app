@@ -7,40 +7,37 @@ const db_version  = require('./db_version.js')
 // TODO: New table is used
 // TODO: Add stuff to be done depending on version
 function init() {
-  execute(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
+  executeRisky(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
-    return execute(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
+    return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
   })
   .then(function() {
-    return execute(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
+    return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     console.log(results.info)
     if (results.rowLength == 0) {
       id = cassandra.types.Uuid.random()
-      return execute(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id + ", 'item', 0, 0)")
+      return executeRisky(getClient(), "INSERT INTO version (id, table_name, cur_version, pre_version) VALUES (" + id + ", 'item', 0, 0)")
     } else {
       return doNothing()
     }
   })
   .then(function() {
-    return execute(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
+    return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     const id = results.rows[0].id
     const cur_version = results.rows[0].cur_version
 
     if (cur_version < db_version) {
-      return execute(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
+      return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
       .then(function() {
-        return execute(getClient(), "CREATE TABL IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
+        return executeRisky(getClient(), "CREATE TABL IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
       })
     } else {
       return doNothing()
     }
-  })
-  .catch(function(err) {
-    process.exit(1)
   })
 }
 
@@ -69,6 +66,28 @@ function test() {
   return execute(getClient(), 'SELECT * FROM system.local')
 }
 
+function executeRisky(client, query) {
+  return client.connect()
+    .then(function() {
+      console.log("executing: " + query)
+      return client.execute(query)
+    })
+    .then(function(results) {
+      console.log("done")
+      client.shutdown(results)
+      return new Promise(function(resolve, reject) {
+        resolve(results)
+      })
+    })
+    .catch(function(err) {
+      console.log("error: " + err)
+      return client.shutdown()
+      .then(function() {
+        process.exit(1)
+      })
+    })
+}
+
 function execute(client, query) {
   return client.connect()
     .then(function() {
@@ -87,6 +106,7 @@ function execute(client, query) {
       return client.shutdown()
     })
 }
+
 
 function getClient() {
   return new cassandra.Client({
