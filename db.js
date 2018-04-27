@@ -46,7 +46,8 @@ function init() {
             return executeRisky(getClient(), "SELECT * FROM item_v1")
           })
           .then(function(data) {
-            console.log(data.rows)
+            console.log(data.rows[0].id)
+            console.log(data.rows[0].name)
 
             var promises
             for (var entry in data.rows) {
