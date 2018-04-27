@@ -6,10 +6,7 @@ const updateRunner  = require("./methods/update")
 const removeRunner  = require("./methods/remove")
 
 function init() {
-  initRunner.run()
-  .then(function() {
-    return
-  })
+  return initRunner.run()
   .catch(function(err) {
     console.log(err)
     process.exit(1)

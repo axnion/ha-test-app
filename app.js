@@ -4,7 +4,6 @@ const bodyParser    = require('body-parser');
 const config    = require('./config.js')
 
 const db = require("./db/db")
-db.init()
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -63,5 +62,9 @@ app.use(function(err, req, res, next) {
   }
 })
 
-app.listen(port)
+db.init()
+.then(function() {
+  app.listen(port)
+})
+
 console.log("Magic happens on port " + port)
