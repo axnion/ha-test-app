@@ -28,11 +28,11 @@ router.get("/system", function(req, res) {
   })
 })
 
-//router.get("/item", function(req, res) {
-//  db.getAll().then(function(results) {
-//    res.json(results)
-//  })
-//})
+router.get("/item", function(req, res) {
+  db.getAll().then(function(results) {
+    res.json(results)
+  })
+})
 
 router.get("/item/:id", function(req, res) {
   db.get(req.params.id).then(function(results) {
