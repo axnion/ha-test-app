@@ -15,6 +15,10 @@ function v1(item) {
 }
 
 function v2(item) {
+  if (!item.number) {
+    item.number = ""
+  }
+
   item.id = cassandra.types.Uuid.random()
   return execute(getClient(), "INSERT INTO item_v2 (id, name, number) VALUES (" + item.id +", '" + item.name + "', '" + item.number + "')")
 }

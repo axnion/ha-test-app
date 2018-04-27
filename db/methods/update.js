@@ -14,6 +14,10 @@ function v1(item) {
 }
 
 function v2(item) {
+  if (!item.number) {
+    item.number = ""
+  }
+
   return execute(getClient(), "UPDATE item_v2 SET name = '" + item.name + "', number = '" + item.number + "' WHERE id = " + item.id + ";")
 }
 
