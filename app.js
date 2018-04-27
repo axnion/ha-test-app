@@ -61,7 +61,7 @@ app.use(function(err, req, res, next) {
   } else {
     next(err)
   }
-}
+})
 
 app.listen(port)
 console.log("Magic happens on port " + port)
