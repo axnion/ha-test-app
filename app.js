@@ -55,5 +55,13 @@ router.delete("/item", function(req, res) {
 
 app.use("/", router)
 
+app.use(function(err, req, res, next) {
+  if (req.xhr) {
+    res.status(500).send({ error: 'Something failed!' })
+  } else {
+    next(err)
+  }
+}
+
 app.listen(port)
 console.log("Magic happens on port " + port)
