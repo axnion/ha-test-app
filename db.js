@@ -84,7 +84,7 @@ function update(item) {
   if (db_version == 1) {
     return execute(getClient(), "UPDATE item_v1 SET name = '" + item.name + "' WHERE id = " + item.id + ";")
   } else if(db_version == 2) {
-    return execute(getClient(), "UPDATE item_v2 SET name = '" + item.name + "', '" + item.number + "' WHERE id = " + item.id + ";")
+    return execute(getClient(), "UPDATE item_v2 SET name = '" + item.name + "', number = '" + item.number + "' WHERE id = " + item.id + ";")
   }
 }
 
