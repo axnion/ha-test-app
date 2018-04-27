@@ -29,7 +29,6 @@ function system() {
 }
 
 module.exports = {
-  init:     init,
   add:      add,
   getAll:   getAll,
   get:      get,
