@@ -10,12 +10,6 @@ app.use(bodyParser.json())
 
 const port = process.env.PORT || 3000
 
-db.init()
-.then(function() {
-  app.listen(port)
-  console.log("Magic happens on port " + port)
-})
-
 var router = express.Router()
 
 router.get("/", function(req, res) {
@@ -59,6 +53,9 @@ router.delete("/item", function(req, res) {
 })
 
 app.use("/", router)
+
+app.listen(port)
+console.log("Magic happens on port " + port)
 
 app.use(function(err, req, res, next) {
   if (req.xhr) {
