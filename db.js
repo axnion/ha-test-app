@@ -2,9 +2,7 @@ const cassandra   = require('cassandra-driver')
 const config      = require('./config.js')
 const db_version  = require('./db_version.js')
 
-// TODO: Add exception handling so it crashes if something happends
 // TODO: Add moving of data between old and new table
-// TODO: New table is used
 // TODO: Add stuff to be done depending on version
 function init() {
   executeRisky(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
@@ -43,23 +41,23 @@ function init() {
 
 function add(item) {
   item.id = cassandra.types.Uuid.random()
-  return execute(getClient(), "INSERT INTO item" + db_version + " (id, name) VALUES (" + item.id +"," + item.name + ")")
+  return execute(getClient(), "INSERT INTO item_v" + db_version + " (id, name) VALUES (" + item.id +"," + item.name + ")")
 }
 
 function get() {
-  return execute(getClient(), "SELECT * FROM item;")
+  return execute(getClient(), "SELECT * FROM item_v" + db_version + ";")
 }
 
 function getById(id) {
-  return execute(getClient(), "SELECT * FROM item WHERE id = " + id + ";")
+  return execute(getClient(), "SELECT * FROM item_v" + db_version + " WHERE id = " + id + ";")
 }
 
 function update(item) {
-  return execute(getClient(), "UPDATE item SET name = '" + item.name + "' WHERE id = " + item.id + ";")
+  return execute(getClient(), "UPDATE item_v" + db_version + " SET name = '" + item.name + "' WHERE id = " + item.id + ";")
 }
 
 function remove(id) {
-  return execute(getClient(), "DELETE FROM item WHERE id = " + id + ";")
+  return execute(getClient(), "DELETE FROM item_v" + db_version + " WHERE id = " + id + ";")
 }
 
 function test() {
