@@ -1,9 +1,9 @@
-const initRunner    = require("./migrations/init")
-const addRunner     = require("./migrations/add")
-const getallRunner  = require("./migrations/getall")
-const getRunner     = require("./migrations/get")
-const updateRunner  = require("./migrations/update")
-const removeRunner  = require("./migrations/remove")
+const initRunner    = require("./methods/init")
+const addRunner     = require("./methods/add")
+const getallRunner  = require("./methods/getall")
+const getRunner     = require("./methods/get")
+const updateRunner  = require("./methods/update")
+const removeRunner  = require("./methods/remove")
 
 function init() {
   initRunner.run()
