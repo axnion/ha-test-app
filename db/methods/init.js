@@ -32,7 +32,7 @@ function run() {
     cur_version = results.rows[0].cur_version
 
     if (cur_version < db_version) {
-      return migraiton()
+      return migration()
     } else {
       return doNothing()
     }
