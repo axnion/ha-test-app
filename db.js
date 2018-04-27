@@ -12,7 +12,7 @@ function init() {
     return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
   })
   .then(function() {
-    return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
+    return executeRisky(getClient(), "SELEC * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     console.log(results.info)
@@ -33,7 +33,7 @@ function init() {
     if (cur_version < db_version) {
       return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
       .then(function() {
-        return executeRisky(getClient(), "CREATE TABL IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
+        return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
       })
     } else {
       return doNothing()
