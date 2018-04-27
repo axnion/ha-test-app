@@ -10,6 +10,10 @@ function init() {
   .then(function() {
     return
   })
+  .catch(function(err) {
+    console.log(err)
+    process.exit(1)
+  })
 }
 
 function add(item) {
