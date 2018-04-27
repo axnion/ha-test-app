@@ -33,14 +33,14 @@ function init() {
     if (cur_version < db_version) {
       return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
       .then(function() {
-        if (cur_version == 1 && db_version >= 2) {
+        if (cur_version <= 1 && db_version >= 1) {
           return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text, number text )")
         } else {
           return doNothing()
         }
       })
       .then(function() {
-        if (cur_version == 2 && db_version >= 3) {
+        if (cur_version == 1 && db_version >= 2) {
           return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text, number text, address text )")
         } else {
           return doNothing()
