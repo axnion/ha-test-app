@@ -1,5 +1,4 @@
 const request = require("request-promise")
-
 const baseUri = "http://localhost:3000"
 
 var r1 = {
@@ -35,9 +34,9 @@ let id
 
 request(r1)
 .then(function(results) {
-  //console.log("/")
-  //console.log(results)
-  //console.log("---------------------------------------------------------------")
+  console.log("/")
+  console.log(results)
+  console.log("---------------------------------------------------------------")
 
   return request(r2)
 })
