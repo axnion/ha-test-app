@@ -1,8 +1,9 @@
+const cassandra         = require('cassandra-driver')
 const executeRisky      = require('./../client').executeRisky
 const getClient         = require('./../client').getClient
 const getInitClient     = require('./../client').getInitClient
 const doNothing         = require('./../client').doNothing
-const db_version           = require('./../db_version')
+const db_version        = require('./../db_version')
 
 let id
 let cur_version
