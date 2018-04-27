@@ -64,6 +64,7 @@ app.use(function(err, req, res, next) {
 
 db.init()
 .then(function() {
+  console.log("hello")
   app.listen(port)
 })
 
