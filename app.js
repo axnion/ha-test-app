@@ -3,7 +3,7 @@ const app           = express()
 const bodyParser    = require('body-parser');
 const config    = require('./config.js')
 
-const db = require("./db")
+const db = require("./db/db")
 db.init()
 
 app.use(bodyParser.urlencoded({extended: true}))
@@ -17,20 +17,20 @@ router.get("/", function(req, res) {
   res.json(config.app)
 })
 
-router.get("/status", function(req, res) {
-  db.test().then(function(results) {
+router.get("/system", function(req, res) {
+  db.system().then(function(results) {
     res.json(results)
   })
 })
 
 router.get("/item", function(req, res) {
-  db.get().then(function(results) {
+  db.getall().then(function(results) {
     res.json(results)
   })
 })
 
 router.get("/item/:id", function(req, res) {
-  db.getById(req.params.id).then(function(results) {
+  db.get(req.params.id).then(function(results) {
     res.json(results)
   })
 })

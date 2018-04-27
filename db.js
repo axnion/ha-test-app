@@ -63,39 +63,78 @@ function init() {
   })
 }
 
+/**
+* ADD ITEM
+* Database function for adding an item to the database.
+*/
 function add(item) {
+  let query = "";
   item.id = cassandra.types.Uuid.random()
+
   if (db_version == 1) {
-    return execute(getClient(), "INSERT INTO item_v1 (id, name) VALUES (" + item.id +", '" + item.name + "')")
+    query = "INSERT INTO item_v1 (id, name) VALUES (" + item.id +", '" + item.name + "')";
   } else if(db_version == 2) {
-    return execute(getClient(), "INSERT INTO item_v2 (id, name, number) VALUES (" + item.id +", '" + item.name + "', '" + item.number + "')")
+    query = "INSERT INTO item_v2 (id, name, number) VALUES (" + item.id +", '" + item.name + "', '" + item.number + "')"
   }
+
+  return execute(getClient(), query)
 }
 
+/**
+* GET ALL ITEMS
+* Database function for getting all items in the database
+*/
 function get() {
   return execute(getClient(), "SELECT * FROM item_v" + db_version + ";")
 }
 
+/**
+* GET ITEM
+* Database function for getting a specific item based on an identifier
+*/
 function getById(id) {
   return execute(getClient(), "SELECT * FROM item_v" + db_version + " WHERE id = " + id + ";")
 }
 
+/**
+* UPDATE
+* Database function for updating a specific item in the database based on the identifier
+*/
 function update(item) {
+  let query = "";
+
   if (db_version == 1) {
-    return execute(getClient(), "UPDATE item_v1 SET name = '" + item.name + "' WHERE id = " + item.id + ";")
+    query = "UPDATE item_v1 SET name = '" + item.name + "' WHERE id = " + item.id + ";";
   } else if(db_version == 2) {
-    return execute(getClient(), "UPDATE item_v2 SET name = '" + item.name + "', number = '" + item.number + "' WHERE id = " + item.id + ";")
+    if (!item.number) {item.number = ""}
+    query = "UPDATE item_v2 SET name = '" + item.name + "', number = '" + item.number + "' WHERE id = " + item.id + ";"
   }
+
+  return execute(getClient(), query)
 }
 
+/**
+* REMOVE
+* Database function for deleteing/removing a specific item in the database based
+* on the identifier
+*/
 function remove(id) {
   return execute(getClient(), "DELETE FROM item_v" + db_version + " WHERE id = " + id + ";")
 }
 
+/**
+* TEST
+* Database function returns data about the database cluster
+*/
 function test() {
   return execute(getClient(), 'SELECT * FROM system.local')
 }
 
+/**
+* DATABASE EXECUTION FUNCTION
+* Function for executing queries where the application should fail completely if
+* there is a problem
+*/
 function executeRisky(client, query) {
   return client.connect()
     .then(function() {
@@ -118,6 +157,11 @@ function executeRisky(client, query) {
     })
 }
 
+/**
+* DATABASE EXECUTION FUNCTION
+* Function for executing queries where we want the application to continue but
+* the server should respons with error if something goes wrong.
+*/
 function execute(client, query) {
   return client.connect()
     .then(function() {
@@ -137,7 +181,10 @@ function execute(client, query) {
     })
 }
 
-
+/**
+* DATABASE CLIENT
+* The default client used to execute queries to Cassandra
+*/
 function getClient() {
   return new cassandra.Client({
     contactPoints: config.db.contactPoints,
@@ -146,6 +193,10 @@ function getClient() {
   })
 }
 
+/**
+* DATABASE CLIENT
+* Client used when a keyspace has to be initialized.
+*/
 function getInitClient() {
   return new cassandra.Client({
     contactPoints: config.db.contactPoints,
@@ -153,6 +204,9 @@ function getInitClient() {
   })
 }
 
+/**
+* Return a promise that does nothing.
+*/
 function doNothing() {
   return Promise.resolve("Doing nothing")
 }
