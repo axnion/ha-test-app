@@ -1,6 +1,6 @@
 const initRunner    = require("./methods/init")
 const addRunner     = require("./methods/add")
-const getallRunner  = require("./methods/getall")
+const getAllRunner  = require("./methods/getAll")
 const getRunner     = require("./methods/get")
 const updateRunner  = require("./methods/update")
 const removeRunner  = require("./methods/remove")
@@ -17,7 +17,7 @@ function add(item) {
 }
 
 function getAll() {
-  return getallRunner.run()
+  return getAllRunner.run()
 }
 
 function get(id) {
@@ -34,4 +34,14 @@ function remove(id) {
 
 function system() {
   return systemRunner.run()
+}
+
+module.exports = {
+  init:     init,
+  add:      add,
+  getAll:   getAll,
+  get:      get,
+  update:   update,
+  remove:   remove,
+  test:     test
 }

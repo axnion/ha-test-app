@@ -24,7 +24,7 @@ router.get("/system", function(req, res) {
 })
 
 router.get("/item", function(req, res) {
-  db.getall().then(function(results) {
+  db.getAll().then(function(results) {
     res.json(results)
   })
 })
