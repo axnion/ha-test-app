@@ -34,14 +34,26 @@ function init() {
       return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
       .then(function() {
         if (cur_version <= 1 && db_version >= 1) {
-          return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text, number text )")
+          return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v1 ( id uuid PRIMARY KEY, name text)")
         } else {
           return doNothing()
         }
       })
       .then(function() {
-        if (cur_version == 1 && db_version >= 2) {
-          return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text, number text, address text )")
+        if (cur_version == 2 && db_version >= 3) {
+          return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v2 ( id uuid PRIMARY KEY, name text, number text)")
+          .then(function() {
+            return executeRisky(getClient(), "SELECT * FROM item_v1")
+          })
+          .then(function(data) {
+            var promises
+            for (var entry in data.rows) {
+              var promise = executeRisky("INSERT INTO item_2 (id, name, number) VALUES (" + entry.id + ", " + entry.name + ", '')")
+              promises.push(promise)
+            }
+
+            return Promises.all(promises)
+          })
         } else {
           return doNothing()
         }
