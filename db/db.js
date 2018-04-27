@@ -1,37 +1,37 @@
-const init    = require("./migrations/init")
-const add     = require("./migrations/add")
-const getall  = require("./migrations/getall")
-const get     = require("./migrations/get")
-const update  = require("./migrations/update")
-const remove  = require("./migrations/remove")
+const initRunner    = require("./migrations/init")
+const addRunner     = require("./migrations/add")
+const getallRunner  = require("./migrations/getall")
+const getRunner     = require("./migrations/get")
+const updateRunner  = require("./migrations/update")
+const removeRunner  = require("./migrations/remove")
 
 function init() {
-  init.run()
+  initRunner.run()
   .then(function() {
     return
   })
 }
 
 function add(item) {
-  return add.run(item)
+  return addRunner.run(item)
 }
 
 function getAll() {
-  return getall.run()
+  return getallRunner.run()
 }
 
 function get(id) {
-  return get.run(id)
+  return getRunner.run(id)
 }
 
 function update(item) {
-  return update.run(item)
+  return updateRunner.run(item)
 }
 
 function remove(id) {
-  return remove.run(id)
+  return removeRunner.run(id)
 }
 
 function system() {
-  return system.run()
+  return systemRunner.run()
 }
