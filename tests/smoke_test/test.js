@@ -1,7 +1,16 @@
-const request = require("request")
+const request = require("request-promise")
 
-request('http://localhost:8081', function (error, response, body) {
-  console.log('error:', error); // Print the error if one occurred
-  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-  console.log('body:', body); // Print the HTML for the Google homepage.
-});
+const baseUri = "http://localhost:8081"
+
+var r1 = {
+  uri: baseUri,
+  headers: {
+        'User-Agent': 'Request-Promise'
+    },
+    json: true
+}
+
+request(r1)
+.then(function(results) {
+  console.log(results)
+})

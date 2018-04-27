@@ -5,9 +5,6 @@ const getInitClient     = require('./../client').getInitClient
 const doNothing         = require('./../client').doNothing
 const db_version        = require('./../db_version')
 
-let id
-let cur_version
-
 function run() {
   return executeRisky(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
@@ -25,32 +22,35 @@ function run() {
     }
   })
   .then(function() {
-    return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
-  })
-  .then(function(results) {
-    id = results.rows[0].id
-    cur_version = results.rows[0].cur_version
-
-    if (cur_version < db_version) {
-      return migration()
-    } else {
-      return doNothing()
-    }
+    return migration()
   })
 }
 
 function migration() {
-  return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
-  .then(function () {
-    if (cur_version <= 1 && db_version >= 1) {
-      return v1()
-    } else {
-      return doNothing()
-    }
-  })
+  let id
+  let cur_version
+
+  return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   .then(function() {
-    if (cur_version < 2 && db_version >= 2) {
-      return v2()
+    id = results.rows[0].id
+    cur_version = results.rows[0].cur_version
+
+    if (cur_version < db_version) {
+      return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
+      .then(function () {
+        if (cur_version <= 1 && db_version >= 1) {
+          return v1()
+        } else {
+          return doNothing()
+        }
+      })
+      .then(function() {
+        if (cur_version < 2 && db_version >= 2) {
+          return v2()
+        } else {
+          return doNothing()
+        }
+      })
     } else {
       return doNothing()
     }
@@ -69,7 +69,7 @@ function v2() {
   .then(function(data) {
     var promises = []
     for (i = 0; i < data.rowLength; i++) {
-      var promise = executeRisky(getClient(), "INSERT INTO item_v2 (id, name, number) VALUES (" + data.rows[i].id + ", '" + data.rows[i].name + "', '')")
+      var promise = executeRisky(getClient(), "UPDATE INTO item_v2 (id, name, number) VALUES (" + data.rows[i].id + ", '" + data.rows[i].name + "', '')")
       promises.push(promise)
     }
 
@@ -78,5 +78,6 @@ function v2() {
 }
 
 module.exports = {
-  run: run
+  run: run,
+  migration: migration
 }
