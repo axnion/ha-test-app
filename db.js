@@ -12,7 +12,7 @@ function init() {
     return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
   })
   .then(function() {
-    return executeRisky(getClient(), "SELEC * FROM version WHERE table_name='item' ALLOW FILTERING")
+    return executeRisky(getClient(), "SELECT * FROM version WHERE table_name='item' ALLOW FILTERING")
   })
   .then(function(results) {
     console.log(results.info)
