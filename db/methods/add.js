@@ -1,5 +1,6 @@
 const getClient   = require('./../client').getClient
-const execute = require('./../client').execute
+const execute     = require('./../client').execute
+const db_version  = require('./../db_version')
 
 function run(item) {
   if (db_version == 1) {
