@@ -1,4 +1,3 @@
-const initRunner    = require("./methods/init")
 const addRunner     = require("./methods/add")
 const getAllRunner  = require("./methods/getAll")
 const getRunner     = require("./methods/get")
