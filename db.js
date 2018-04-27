@@ -31,13 +31,16 @@ function init() {
     const cur_version = results.rows[0].cur_version
 
     if (cur_version < db_version) {
-      execute(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
+      return execute(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
       .then(function() {
-        return execute(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
+        return execute(getClient(), "CREATE TABL IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
       })
     } else {
       return doNothing()
     }
+  })
+  .catch(function(err) {
+    process.exit(1)
   })
 }
 
