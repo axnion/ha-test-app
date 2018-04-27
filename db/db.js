@@ -43,5 +43,5 @@ module.exports = {
   get:      get,
   update:   update,
   remove:   remove,
-  test:     test
+  system:   system
 }
