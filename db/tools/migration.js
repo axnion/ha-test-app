@@ -76,6 +76,5 @@ function v2() {
 }
 
 module.exports = {
-  run: run,
   migration: migration
 }
