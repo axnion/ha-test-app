@@ -2,9 +2,11 @@ const cassandra   = require('cassandra-driver')
 const config      = require('./config.js')
 const db_version  = require('./db_version.js')
 
+
 // TODO: Add moving of data between old and new table
-// TODO: Add stuff to be done depending on version
 function init() {
+  let cur_version
+
   executeRisky(getInitClient(), "CREATE KEYSPACE IF NOT EXISTS inventory WITH REPLICATION = { 'class': 'SimpleStrategy', 'replication_factor' : 3 }")
   .then(function() {
     return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS version ( id uuid PRIMARY KEY, table_name text, cur_version int, pre_version int )")
@@ -26,12 +28,23 @@ function init() {
   })
   .then(function(results) {
     const id = results.rows[0].id
-    const cur_version = results.rows[0].cur_version
+    cur_version = results.rows[0].cur_version
 
     if (cur_version < db_version) {
       return executeRisky(getClient(), "UPDATE version SET cur_version = " + db_version + ", pre_version = " + cur_version + " WHERE id = " + id )
       .then(function() {
-        return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text )")
+        if (cur_version == 1 && db_version >= 2) {
+          return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text, number text )")
+        } else {
+          return doNothing()
+        }
+      })
+      .then(function() {
+        if (cur_version == 2 && db_version >= 3) {
+          return executeRisky(getClient(), "CREATE TABLE IF NOT EXISTS item_v" + db_version + " ( id uuid PRIMARY KEY, name text, number text, address text )")
+        } else {
+          return doNothing()
+        }
       })
     } else {
       return doNothing()
